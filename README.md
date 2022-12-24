@@ -29,6 +29,7 @@ bit spaghettiish. Todo is basically what i need going for it. Could have tonnes 
 
 
 The main extra features I would want to add are:
-Options - Hotkey settings
-Themes - dark mode (3rd party ones seem to need ttk, which is like styling for tkinter)
-Listbox Scroll bars
+
+- Options - Hotkey settings
+- Themes - dark mode (3rd party ones seem to need ttk, which is like styling for tkinter)
+- Listbox Scroll bars
