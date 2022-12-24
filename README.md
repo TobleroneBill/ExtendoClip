@@ -18,7 +18,7 @@ This list can:
 
 <p></p>
 
-press ctrl + ` to generate a quick view of recent clipboard items:
+press ctrl + ` (dont use or prepare to alt+f4) to generate a quick view of recent clipboard items:
 
 
 This window can be navigated by pressing up or down, and selected with enter (meant to be quick way to access recent clipboard items)
