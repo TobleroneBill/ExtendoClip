@@ -17,17 +17,6 @@ Colors = {
 # Main Window
 root = Tk()
 
-'''
-def resource_path(relative_path):
-    try:
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path,relative_path)
-'''
-
-
 CPText = 'Copied Text Here'
 TextLabel = Label(root, text=CPText).pack
 ListOpen = False
@@ -37,10 +26,8 @@ clipboard = [pyperclip.paste(), ]
 UpdateString = StringVar(root, 'Updates Here')
 
 
-
 def onCtrlC():
     time.sleep(0.1)  # If this runs too fast, it doesn't detect the copied text fast enough
-    global CPText
     if pyperclip.paste() in clipboard:  # Check it's not already in the list (had a function for this, but python makes this ez)
         return
     clipboard.append(pyperclip.paste())
@@ -63,14 +50,22 @@ def ResetLB(listbox):
 
 
 def delSelection(key=None):
-    if not key == 'BackSpace' or ListOpen:
-        print('heyo')
-        return
-    print(clipboard[windowEntities['ITEMLIST'].curselection()[0]])
+    try:
+        #if not a keypress, or list is open, cancel
+        if key.keysym != 'BackSpace' or ListOpen:
+            return
+    except AttributeError:
+        # if the button is used, then check list is open. if not COMPLETE THE TASK
+        if ListOpen:
+            print('List Open')
+            return
+    # print(clipboard[windowEntities['ITEMLIST'].curselection()[0]])
     thing = windowEntities['ITEMLIST'].curselection()[0]
+    print(thing)
     UpdateString.set(f"#{thing} Deleted")
-    clipboard.remove(clipboard[windowEntities['ITEMLIST'].curselection()[0]])
-    windowEntities['ITEMLIST'].delete(windowEntities['ITEMLIST'].curselection())
+    clipboard.remove(clipboard[thing])  # Remove the clipboard item at listbox selection indexes (should be the same)
+    windowEntities['ITEMLIST'].delete(thing)
+    return
 
 
 def UpdateLB(listbox):
@@ -85,8 +80,8 @@ def UpdateLB(listbox):
 
 def CopySelection(LB, window):
     global ListOpen
-    #print(clipboard[LB.curselection()[0]])
-    #print(f'User Copied {clipboard[LB.curselection()[0]]}')
+    # print(clipboard[LB.curselection()[0]])
+    # print(f'User Copied {clipboard[LB.curselection()[0]]}')
     ListOpen = False
     window.withdraw()
     keyboard.remove_hotkey('enter')
@@ -113,8 +108,8 @@ def quitApp():
 # Added to make the history window function smaller
 def MakeChildWindow(position):
     LBWindow = Toplevel(takefocus=True)
-    #LBWindow.iconbitmap((resource_path("Logo.ico")))
-    #LBWindow.iconbitmap(r"C:\Users\JOE\Desktop\ClipboardApp\PygameVer\Logo.ico")
+    # LBWindow.iconbitmap((resource_path("Logo.ico")))
+    # LBWindow.iconbitmap(r"C:\Users\JOE\Desktop\ClipboardApp\PygameVer\Logo.ico")
     windowLen = len(max(clipboard, key=len))
     # size of the largest string + a lil more
     if windowLen > 500:
@@ -145,8 +140,11 @@ def MakeHistoryWindow():
     keyboard.add_hotkey('enter', CopySelection, (ClipboardLB, window))  # Adds the enter hotkey
 
     ClipboardLB.pack()
+
+    time.sleep(0.01)
+    window.attributes('-topmost', 1)  # This forces the window to the forground (front)
+    window.focus_force()
     ClipboardLB.focus_force()
-    window.attributes('-topmost', 1)    #This forces the window to the forground (front)
 
     CheckFocus(window)
 
@@ -220,8 +218,8 @@ def tksetup():
     root.resizable(False, False)
     root.title('Clipper')
     root.geometry("300x500")
-    #root.iconbitmap((resource_path("Logo.png")))
-    #root.iconbitmap(r"C:\Users\JOE\Desktop\ClipboardApp\PygameVer\Logo.ico")
+    # root.iconbitmap((resource_path("Logo.png")))
+    # root.iconbitmap(r"C:\Users\JOE\Desktop\ClipboardApp\PygameVer\Logo.ico")
     for item in windowEntities.values():
         item.pack()
     windowEntities['ITEMLIST'].bind('<Double-1>', CopyItem)
@@ -230,10 +228,7 @@ def tksetup():
     sys.exit()  # This stops the program when the x button is actually pressed (lets user keep going if not used)
 
 
-
 def main():
-
-
     global CopyLabel
     # Hotkeys to look for: ctrl c, x.
     keyboard.add_hotkey('ctrl+c', onCtrlC)
