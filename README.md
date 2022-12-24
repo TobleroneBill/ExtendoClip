@@ -4,6 +4,10 @@ extended clipboard app in tkinter
 Main Features:
 Automatically copies all items from clipboard to a list, which can be accessed later (like windows key + v)
 
+ISSUES:
+the subwindow that pops up on ctrl+` seems to be really buggy. I CBA to fix right now, so when i fix ill upload a fixed version. I would avoid using it for now since it sucks.
+Going to migrate to PyQt I think, since hopefully that has a better time building through pyinstaller, and i can fix my issues here
+
 
 This list can:
 - Be saved to a file
